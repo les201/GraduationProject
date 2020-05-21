@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>   <!--activity_register.xml Sppiner 전공 콤보박스-->
+    <string-array name="major">
+        <item>software</item>
+        <item>marketing</item>
+        <item>IT MBA</item>
+        <item>marketing MBA</item>
+    </string-array>
+
+    <string-array name="year">
+        <item>2016</item>
+        <item>2017</item>
+        <item>2018</item>
+        <item>2019</item>
+        <item>2020</item>
+    </string-array>
+
+    <string-array name="term">
+        <item>spring</item>
+        <item>fall</item>
+    </string-array>
+
+    <string-array name="area">
+        <item>Compulsory</item>
+        <item>Status</item>
+        <item>Elective</item>
+    </string-array>
+
+    <string-array name="graduateMajor">
+        <item>IT MBA</item>
+        <item>marketing MBA</item>
+    </string-array>
+
+    <string-array name="universityRefinementMajor">
+        <item>item1</item>
+        <item>item2</item>
+        <item>item3</item>
+    </string-array>
+
+    <string-array name="universityMajor">
+        <item>software</item>
+        <item>marketing</item>
+    </string-array>
+</resources>
