@@ -89,6 +89,7 @@ public class CourseFragment extends Fragment {
     private Spinner termSpinner;
     private ArrayAdapter areaAdapter;
     private Spinner areaSpinner;
+
     private ArrayAdapter majorAdapter;
     private Spinner majorSpinner;
 
@@ -141,21 +142,9 @@ public class CourseFragment extends Fragment {
             }
         });
 
-         areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        courseListView=(ListView)getView().findViewById(R.id.courseListView);
+        courseListView=(ListView) getView().findViewById(R.id.courseListView);
         courseList = new ArrayList<Course>();
-        adapter = new CourseListAdapter(getContext().getApplicationContext(),courseList);
+        adapter = new CourseListAdapter(getContext().getApplicationContext(),courseList, this);
         courseListView.setAdapter(adapter);
 
         Button searchButton = (Button) getView().findViewById(R.id.searchButton);
@@ -212,17 +201,14 @@ public class CourseFragment extends Fragment {
 
         @Override
         protected void onPreExecute(){    ///검색'search' 활성화 시
-
             try {
                 target= "https://bakhoijae.cafe24.com/ES_CourseList.php?courseUniversity=" + URLEncoder.encode(courseUniversity,"UTF-8") +
-                        "&courseYear=" + URLEncoder.encode(yearSpinner.getSelectedItem().toString().substring(0,4),"UTF-8") +   "&courseTerm=" + URLEncoder.encode(termSpinner.getSelectedItem().toString(),"UTF-8") +
-                        "&courseArea=" + URLEncoder.encode(areaSpinner.getSelectedItem().toString(),"UTF-8") +   "&courseMajor=" + URLEncoder.encode(majorSpinner.getSelectedItem().toString(),"UTF-8");
-
+                        "&courseYear=" + URLEncoder.encode(yearSpinner.getSelectedItem().toString().substring(0,4),"UTF-8") + "&courseTerm=" + URLEncoder.encode(termSpinner.getSelectedItem().toString(),"UTF-8") +
+                        "&courseArea=" + URLEncoder.encode(areaSpinner.getSelectedItem().toString(),"UTF-8") + "&courseMajor=" + URLEncoder.encode(majorSpinner.getSelectedItem().toString(),"UTF-8");
+                System.out.println(target);
             } catch (Exception e){
                 e.printStackTrace();
             }
-
-
         }
 
         @Override
@@ -254,64 +240,83 @@ public class CourseFragment extends Fragment {
             super.onProgressUpdate();
         }
 
+        /*
+        @Override
+        public void onPostExecute(String result){
+            try{
+                AlertDialog dialog;
+                AlertDialog.Builder builder = new AlertDialog.Builder(CourseFragment.this.getContext());
+                dialog = builder.setMessage(result)
+                        .setPositiveButton("OK", null)
+                        .create();
+                dialog.show();
 
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        */
 
-  @Override
-  public void onPostExecute(String result){
-      try{
-          courseList.clear();
-          JSONObject jsonObject = new JSONObject(result);
-          JSONArray jsonArray = jsonObject.getJSONArray("response");
-          int count=0;
-          int courseID; //강의 고유번호
-          String courseUniversity; //학부 혹은 대학원
-          int courseYear; // 해당 년도
-          String courseTerm; //해당학기
-          String courseArea; //강의 영역
-          String courseMajor; //해당학과
-          String courseGrade; //해당 학년
-          String courseTitle; //강의 제목
-          int courseCredit; //강의 학점
-          int courseDivide; //강의 분반
-          int coursePersonnel; //강의 제한 인원
-          String courseProfessor; //강의 교수
-          String courseTime; //강의 시간대
-          String courseRoom; //강의실
-          while(count<jsonArray.length())
-          {
-              JSONObject object = jsonArray.getJSONObject(count);
-              courseID = object.getInt("courseID");
-              courseUniversity = object.getString("courseUniversity");
-              courseYear = object.getInt("courseYear");
-              courseTerm = object.getString("courseTerm");
-              courseArea = object.getString("courseArea");
-              courseMajor = object.getString("courseMajor");
-              courseGrade = object.getString("courseGrade");
-              courseTitle = object.getString("courseTitle");
-              courseCredit = object.getInt("courseCredit");
-              courseDivide = object.getInt("courseDivide");
-              coursePersonnel = object.getInt("coursePersonnel");
-              courseProfessor = object.getString("courseProfessor");
-              courseTime = object.getString("courseTime");
-              courseRoom = object.getString("courseRoom");
-              Course course= new Course(courseID, courseUniversity, courseYear, courseTerm, courseArea, courseMajor, courseGrade, courseTitle, courseCredit, courseDivide, coursePersonnel, courseProfessor, courseTime, courseRoom) ;
-              courseList.add(course);
-              count++;
-          }
-          if(count==0)
-          {
-              AlertDialog dialog;
-              AlertDialog.Builder builder = new AlertDialog.Builder(CourseFragment.this.getActivity());
-              dialog = builder.setMessage("There are no class")
-                      .setNegativeButton("OK",null)
-                      .create();
-              dialog.show();
-          }
-          adapter.notifyDataSetChanged();
-      } catch(Exception e){
-          e.printStackTrace();
-      }
-  }
+        @Override
+        public void onPostExecute(String result){
+            try{
+                courseList.clear();
+                JSONObject jsonObject = new JSONObject(result);
+                JSONArray jsonArray = jsonObject.getJSONArray("response");
+
+                int count=0;
+
+                int courseID; //강의 고유번호
+                String courseUniversity; //학부 혹은 대학원
+                int courseYear; // 해당 년도
+                String courseTerm; //해당학기
+                String courseArea; //강의 영역
+                String courseMajor; //해당학과
+                String courseGrade; //해당 학년
+                String courseTitle; //강의 제목
+                int courseCredit; //강의 학점
+                int courseDivide; //강의 분반
+                int coursePersonnel; //강의 제한 인원
+                String courseProfessor; //강의 교수
+                String courseTime; //강의 시간대
+                String courseRoom; //강의실
+
+                while(count < jsonArray.length())
+                {
+                    JSONObject object = jsonArray.getJSONObject(count);
+                    courseID = object.getInt("courseID");
+                    courseUniversity = object.getString("courseUniversity");
+                    courseYear = object.getInt("courseYear");
+                    courseTerm = object.getString("courseTerm");
+                    courseArea = object.getString("courseArea");
+                    courseMajor = object.getString("courseMajor");
+                    courseGrade = object.getString("courseGrade");
+                    courseTitle = object.getString("courseTitle");
+                    courseCredit = object.getInt("courseCredit");
+                    courseDivide = object.getInt("courseDivide");
+                    coursePersonnel = object.getInt("coursePersonnel");
+                    courseProfessor = object.getString("courseProfessor");
+                    courseTime = object.getString("courseTime");
+                    courseRoom = object.getString("courseRoom");
+
+                    Course course= new Course(courseID, courseUniversity, courseYear, courseTerm, courseArea, courseMajor, courseGrade, courseTitle, courseCredit, courseDivide, coursePersonnel, courseProfessor, courseTime, courseRoom);
+                    courseList.add(course);
+                    count++;
+                }
+                if(count==0)
+                {
+                    AlertDialog dialog;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CourseFragment.this.getActivity());
+                    dialog = builder.setMessage("There are no class")
+                            .setNegativeButton("OK",null)
+                            .create();
+                    dialog.show();
+                }
+                adapter.notifyDataSetChanged();
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+        }
 
     }
 }

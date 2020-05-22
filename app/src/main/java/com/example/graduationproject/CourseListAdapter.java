@@ -29,16 +29,23 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseListAdapter extends BaseAdapter {
+public class  CourseListAdapter extends BaseAdapter {
 
     private Context context;
-    private List<Course>  courseList;
+    private List<Course> courseList;
+    private Fragment parent;
 
+    private String userID = MainActivity.userID;
+    private Schedule schedule= new Schedule();
+    private List<Integer> courseIDList;
 
-    public CourseListAdapter(Context context, List<Course> courseList) {
+    public CourseListAdapter(Context context, List<Course> courseList, Fragment parent) {
         this.context = context;
         this.courseList = courseList;
-
+        this.parent = parent;
+        schedule=new Schedule();
+        courseIDList = new ArrayList<Integer>();
+        new BackgroundTask().execute();
     }
 
     @Override
@@ -58,7 +65,7 @@ public class CourseListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
-        View v= View.inflate(context,R.layout.course,null);
+        View v= View.inflate(context, R.layout.course,null);
         TextView courseGrade = (TextView) v.findViewById(R.id.courseGrade);
         TextView courseTitle = (TextView) v.findViewById(R.id.courseTitle);
         TextView courseCredit = (TextView) v.findViewById(R.id.courseCredit);
@@ -67,13 +74,21 @@ public class CourseListAdapter extends BaseAdapter {
         TextView courseProfessor = (TextView) v.findViewById(R.id.courseProfessor);
         TextView courseTime = (TextView) v.findViewById(R.id.courseTime);
 
-         if(courseList.get(i).getCourseGrade().equals("no limit") || courseList.get(i).getCourseGrade().equals(""))
-         {
-             courseGrade.setText("all grades");
-         } else
-         {
-             courseGrade.setText(courseList.get(i).getCourseGrade());
-         }
+        if(courseList.get(i).getCourseGrade().equals("no limit") || courseList.get(i).getCourseGrade().equals(""))
+        {
+            courseGrade.setText("all grades");
+        } else
+        {
+            if(courseList.get(i).getCourseGrade().equals("1")){
+                courseGrade.setText("Freshman");
+            } else if(courseList.get(i).getCourseGrade().equals("2")){
+                courseGrade.setText("Sophomore");
+            } else if(courseList.get(i).getCourseGrade().equals("3")){
+                courseGrade.setText("Junior");
+            } else {
+                courseGrade.setText("Senior");
+            }
+        }
         courseTitle.setText(courseList.get(i).getCourseTitle());
         courseCredit.setText(courseList.get(i).getCourseCredit()+"credit");
         courseDivide.setText("class"+courseList.get(i).getCourseDivide());
@@ -84,18 +99,74 @@ public class CourseListAdapter extends BaseAdapter {
         {
             coursePersonnel.setText("limited personnel: "+courseList.get(i).getCoursePersonnel());
         }
-
-        courseProfessor.setText("Prof."+courseList.get(i).getCourseProfessor());
+        courseProfessor.setText(courseList.get(i).getCourseProfessor());
         courseTime.setText(courseList.get(i).getCourseTime()+"");
-
-
 
         v.setTag(courseList.get(i).getCourseID());
 
-        return v;
-    }}
+        Button addButton = (Button) v.findViewById(R.id.addButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String userID = MainActivity.userID;
+                boolean validate = false;
+                validate=schedule.validate(courseList.get(i).getCourseTime());
+                if(!alreadyIn(courseIDList, courseList.get(i).getCourseID()))
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(parent.getActivity());
+                    AlertDialog dialog= builder.setMessage("Already you have it")
+                            .setPositiveButton("retry",null)
+                            .create();
+                    dialog.show();
+                }
+                else if(validate ==false)
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(parent.getActivity());
+                    AlertDialog dialog= builder.setMessage("Course is duplicate")
+                            .setPositiveButton("retry",null)
+                            .create();
+                    dialog.show();
+                }
+                else{
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try{
+                                JSONObject jsonResponse = new JSONObject(response);
+                                boolean success = jsonResponse.getBoolean("success");
+                                if(success){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(parent.getActivity());
+                                    AlertDialog  dialog= builder.setMessage("Add your course Successfully")
+                                            .setPositiveButton("ok",null)
+                                            .create();
+                                    dialog.show();
+                                    courseIDList.add(courseList.get(i).getCourseID());
+                                    schedule.addSchedule(courseList.get(i).getCourseTime());
+                                }
+                                else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(parent.getActivity());
+                                    AlertDialog dialog = builder.setMessage("Can not Add your course")
+                                            .setNegativeButton("ok",null)
+                                            .create();
+                                    dialog.show();
+                                }
+                            }
+                            catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    AddRequest addRequest = new AddRequest(userID, courseList.get(i).getCourseID()+ "",responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(parent.getActivity());
+                    queue.add(addRequest);
 
-  /*  class BackgroundTask extends AsyncTask<Void,Void,String>
+                }
+            }
+        });
+        return v;
+    }
+
+    class BackgroundTask extends AsyncTask<Void,Void,String>
     {
         String target;
 
@@ -176,4 +247,3 @@ public class CourseListAdapter extends BaseAdapter {
         return true;
     }
 }
-*/

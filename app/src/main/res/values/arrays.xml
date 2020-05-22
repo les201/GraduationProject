@@ -8,9 +8,6 @@
     </string-array>
 
     <string-array name="year">
-        <item>2016</item>
-        <item>2017</item>
-        <item>2018</item>
         <item>2019</item>
         <item>2020</item>
     </string-array>
@@ -40,5 +37,12 @@
     <string-array name="universityMajor">
         <item>software</item>
         <item>marketing</item>
+    </string-array>
+
+    <string-array name="rank">
+        <item>ByEntire</item>
+        <item>Male prefer</item>
+        <item>Female prefer</item>
+
     </string-array>
 </resources>

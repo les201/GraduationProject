@@ -15,6 +15,7 @@ public class Course {
     String courseProfessor; //강의 교수
     String courseTime; //강의 시간대
     String courseRoom; //강의실
+    int courseRival; //강의 경쟁자 수
 
     public int getCourseID() {
         return courseID;
@@ -108,9 +109,7 @@ public class Course {
         return courseProfessor;
     }
 
-    public void setCourseProfessor(String courseProfessor) {
-        this.courseProfessor = courseProfessor;
-    }
+    public void setCourseProfessor(String courseProfessor) { this.courseProfessor = courseProfessor; }
 
     public String getCourseTime() {
         return courseTime;
@@ -126,6 +125,30 @@ public class Course {
 
     public void setCourseRoom(String courseRoom) {
         this.courseRoom = courseRoom;
+    }
+
+    public int getCourseRival() { return courseRival; }
+
+    public void setCourseRival(int courseRival) { this.courseRival = courseRival; }
+
+    public Course(int courseID, String courseTitle, int courseDivide, String courseGrade, int coursePersonnel, int courseRival) {
+        this.courseID = courseID;
+        this.courseTitle = courseTitle;
+        this.courseDivide = courseDivide;
+        this.courseGrade = courseGrade;
+        this.coursePersonnel = coursePersonnel;
+        this.courseRival = courseRival;
+    }
+
+    public Course(int courseID, String courseGrade, String courseTitle, String courseProfessor, int courseCredit, int courseDivide, int coursePersonnel, String courseTime) {
+        this.courseID = courseID;
+        this.courseGrade = courseGrade;
+        this.courseTitle = courseTitle;
+        this.courseProfessor = courseProfessor;
+        this.courseCredit = courseCredit;
+        this.courseDivide = courseDivide;
+        this.coursePersonnel = coursePersonnel;
+        this.courseTime = courseTime;
     }
 
     public Course(int courseID, String courseUniversity, int courseYear, String courseTerm, String courseArea, String courseMajor, String courseGrade, String courseTitle, int courseCredit, int courseDivide, int coursePersonnel, String courseProfessor, String courseTime, String courseRoom) {

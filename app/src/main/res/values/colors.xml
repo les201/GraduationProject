@@ -5,4 +5,12 @@
     <color name="colorAccent">#546E7A</color>
     <color name="colorWarning">#ED00CE</color>
     <color name="colorGray">#8C8C8C</color>
+    <color name="colorWinner">#ECC313</color>
+    <color name="colorTimetable">#EB6893</color>
+    <color name="colorWarning2">#D32CE9</color>
+    <color name="colorRed">#FF1212</color>
+    <color name="colorSafe">#08C904</color>
+    <color name="colorDanger">#8324FF</color>
+
+
 </resources>
